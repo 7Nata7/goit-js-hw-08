@@ -23,16 +23,4 @@ function createGalleryItem({ preview, original, description }) {
 const lightbox = new SimpleLightbox(".gallery a", {
   captionsData: "alt",
   captionDelay: 250,
-  onOpen: () => {
-    window.addEventListener("keydown", onKeyPress);
-  },
-  onClose: () => {
-    window.removeEventListener("keydown", onKeyPress);
-  },
 });
-
-function onKeyPress(e) {
-  if (e.code === "Escape") {
-    lightbox.close();
-  }
-}
