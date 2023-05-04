@@ -1,29 +1,25 @@
 import throttle from 'lodash.throttle';
+
 import Player from '@vimeo/player';
+const vimeoPlayer = new Player('vimeo-player');
 
-const timeKey = 'videoplayer-current-time';
-const iframe = document.getElementById('vimeo-player');
-const player = new Player(iframe);
-
-// const onPlay = function() {
-//   player.setCurrentTime(localStorage.getItem(timeKey));
-//   player.on('timeupdate', throttle(function(data) {
-//     localStorage.setItem(timeKey, data.seconds);
-//     console.log('Time saved:', data.seconds);
-//   }, 1000));
-// };
-const onPlay = function() {
-  player.setCurrentTime(localStorage.getItem(timeKey));
-  player.on('timeupdate', throttle(function(data) {
-    localStorage.setItem(timeKey, data.seconds);
-    console.log('Time saved:', data.seconds);
-  }, 1000));
-};
-
-player.on('play', onPlay);
-
-const currentTime = localStorage.getItem(timeKey);
-if (currentTime) {
-  player.setCurrentTime(currentTime);
+const savedTime = localStorage.getItem('videoplayer-current-time');
+if (savedTime) {
+  const currentTime = JSON.parse(savedTime);
+  vimeoPlayer.setCurrentTime(currentTime);
+  // console.log(savedTime)
 }
+
+vimeoPlayer.on('timeupdate', throttle(function(data) {
+  const currentTime = Math.floor(data.seconds);
+
+  const lastUpdateTime = localStorage.getItem('lastUpdateTime') || 0;
+  const now = Date.now();
+  if (now - lastUpdateTime > 1000) {
+    localStorage.setItem('lastUpdateTime', now);
+    localStorage.setItem('videoplayer-current-time', JSON.stringify(currentTime));
+  }
+  console.log(currentTime);
+}, 1000));
+
 
