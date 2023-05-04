@@ -17,11 +17,16 @@ function loadFormValues() {
 }
 
 function saveForm(e) {
-    e.preventDefault();
+  e.preventDefault();
   const email = form.elements.email.value;
   const message = form.elements.message.value;
-  const formValues = { email, message };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(formValues));
+
+  if (email) {
+    const formValues = { email, message };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(formValues));
+  } else {
+    alert('Please fill in your email');
+  }
 }
 
 function submitForm(e) {
